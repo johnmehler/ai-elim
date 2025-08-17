@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "TextHighlighter",
+  "version": "1.0",
+  "description": "Highlights divs with text longer than 50 characters in light orange.",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
