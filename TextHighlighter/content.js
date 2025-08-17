@@ -73,6 +73,8 @@ function processElement(element) {
         span.className = 'highlight-orange';
         span.textContent = textNode.textContent;
         textNode.parentNode.replaceChild(span, textNode);
+        
+        console.log(`"${span.textContent.trim()}" - ${span.textContent.trim().length} characters`);
       });
     }
   }
