@@ -64,6 +64,11 @@ function processElement(element) {
           return;
         }
         
+        // Only highlight text nodes that are substantial content (50+ characters)
+        if (textNode.textContent.trim().length < 50) {
+          return;
+        }
+        
         const span = document.createElement('span');
         span.className = 'highlight-orange';
         span.textContent = textNode.textContent;
