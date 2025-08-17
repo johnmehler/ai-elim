@@ -59,6 +59,11 @@ function processElement(element) {
     // Use DocumentFragment for batch DOM operations
     if (textNodes.length > 0) {
       textNodes.forEach(textNode => {
+        // Skip if text node is already inside a highlighted span
+        if (textNode.parentNode.classList && textNode.parentNode.classList.contains('highlight-orange')) {
+          return;
+        }
+        
         const span = document.createElement('span');
         span.className = 'highlight-orange';
         span.textContent = textNode.textContent;
