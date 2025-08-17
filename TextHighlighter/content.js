@@ -36,45 +36,40 @@ function processElement(element) {
     return;
   }
   
-  const textContent = element.textContent.trim();
+  // Find all text nodes in this element
+  const walker = document.createTreeWalker(
+    element,
+    NodeFilter.SHOW_TEXT,
+    node => {
+      // Filter out whitespace-only nodes during traversal
+      return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  );
   
-  // Check if element has 50+ characters of text
-  if (textContent.length > 50) {
-    // Find all text nodes in this element
-    const walker = document.createTreeWalker(
-      element,
-      NodeFilter.SHOW_TEXT,
-      node => {
-        // Filter out whitespace-only nodes during traversal
-        return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+  const textNodes = [];
+  let node;
+  while (node = walker.nextNode()) {
+    textNodes.push(node);
+  }
+  
+  // Use DocumentFragment for batch DOM operations
+  if (textNodes.length > 0) {
+    textNodes.forEach(textNode => {
+      // Skip if text node is already inside a highlighted span
+      if (textNode.parentNode.classList && textNode.parentNode.classList.contains('highlight-orange')) {
+        return;
       }
-    );
-    
-    const textNodes = [];
-    let node;
-    while (node = walker.nextNode()) {
-      textNodes.push(node);
-    }
-    
-    // Use DocumentFragment for batch DOM operations
-    if (textNodes.length > 0) {
-      textNodes.forEach(textNode => {
-        // Skip if text node is already inside a highlighted span
-        if (textNode.parentNode.classList && textNode.parentNode.classList.contains('highlight-orange')) {
-          return;
-        }
-        
-        // Only highlight text nodes that are substantial content (50+ characters)
-        if (textNode.textContent.trim().length < 50) {
-          return;
-        }
-        
-        const span = document.createElement('span');
-        span.className = 'highlight-orange';
-        span.textContent = textNode.textContent;
-        textNode.parentNode.replaceChild(span, textNode);
-      });
-    }
+      
+      // Only highlight text nodes that are substantial content (50+ characters)
+      if (textNode.textContent.trim().length < 50) {
+        return;
+      }
+      
+      const span = document.createElement('span');
+      span.className = 'highlight-orange';
+      span.textContent = textNode.textContent;
+      textNode.parentNode.replaceChild(span, textNode);
+    });
   }
   
   // Mark as processed
